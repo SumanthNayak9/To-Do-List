@@ -1,70 +1,52 @@
-.done {
-  text-decoration: line-through;
+.todo-form{
+	text-align: center;
 }
 
-
+.done {
+/*  text-decoration: line-through;*/
+	
+    background: green;
+    
+}
 
 body {
   text-align: center;
-  background: linear-gradient(to right, yellow, orange, red);s
+  background: linear-gradient(to right, yellow, orange, red);
   font-size: 100%;
 }
 
-h1 {
-  font-size: 3em;
+table {
+	border-collapse: collapse;
+    width: 100%;
+    border: 2px solid black;
 }
 
-p {
-  font-size: 1.5em;
+th, td {
+	border: 1.5px solid black;
+    padding: 8px;
+    text-align: left;
 }
 
-button:hover{
-  cursor: pointer;
+tr {
+	text-align: center;
 }
 
 button {
-  margin: 3px;
+	cursor: pointer;
+}
+
+h1,form{
+	text-align: center;
+}
+
+.btn-primary{
+  margin: 5px 3px;
   padding: 2px;
 }
 
-time:hover{
-  cursor: pointer;
+.btn:hover{
+	cursor: pointer;
 }
-
-ul li.editMode input[type=text] {
-  display:block;
-}
-
-ul li.editMode label {
-  display:none;
-}
-
-#Btn1 {
-  background-color: red;
-  margin: 2px;
-  padding: 2px;
-}
-
-#Btn2 {
-  background-color: red;
-  margin: 2px;
-  padding: 2px;
-}
-
-#Btn3 {
-  background-color: red;
-  margin: 2px;
-  padding: 2px;
-}
-
-#Btn4 {
-  background-color: red;
-  margin: 2px;
-  padding: 2px;
-}
-
-ul li {
-  margin: 5px;
-  padding: 5px;
-  border: 12px;
+.btn{
+	background-color: orange;
 }
