@@ -1,100 +1,63 @@
-var button = document.getElementById("enter");
-var input = document.getElementById("userinput");
-var ul = document.querySelector("ul");
-var items = document.querySelectorAll("li");
-var editInput = document.createElement("input");
-var Time = document.getElementById("Time");
+document.addEventListener("DOMContentLoaded", function() {
+    const todoForm = document.getElementById("todo-form");
+    const todoInput = document.getElementById("todo");
+    const todoTimein = document.getElementById("Time");
+    const todoTable = document.getElementById("todo-table");
+    const addedTodos =[];
 
-function inputLength() {
-  return input.value.length;
-}
+    todoForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const todoText = todoInput.value;
+        const todoTime = todoTimein.value;
+        // Check if the todoText is not empty and is not already in the addedTodos array
+        if (todoText && !addedTodos.includes(todoText)) {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${todoText}</td>
+                <td>${todoTime}</td>
+                <td><button id="btn" class="toggle-button">Done</button></td>
+                <td><button id="btn" class="delete-button"><i class="fas fa-trash"></i></button></td>
+                <td><button id="btn" class="edit-button"><i class="fas fa-edit"></i></button></td>
+            `;
 
-// new list items
-function createListElement() {
-  
-  var li = document.createElement("li");
-  li.appendChild(document.createTextNode(input.value + ` ${Time.value}`));
-  //creates buttons
-  Time.value='';
-  var btn1 = document.createElement("button");
-  var btn2 = document.createElement("button");
-  var btn3 = document.createElement("button");
+            todoTable.querySelector("tbody").appendChild(newRow);
+            addedTodos.push(todoText);
+            todoInput.value = "";
+            todoTimein.value = "";
 
-  btn1.innerHTML = "Done";
-  btn2.innerHTML = "Delete";
-  btn3.innerHTML = "Edit";
+        }
+        else if (addedTodos.includes(todoText)) {
+            alert("The todo item already exists in the list.");
+        }
+    });
 
+    todoTable.addEventListener("click", function(event) {
+        const target = event.target;
 
+        if (target.classList.contains("delete-button")) {
+            target.closest("tr").remove();
+        } else if (target.classList.contains("edit-button")) {
+            const todoText = target.closest("tr").querySelector("td:first-child");
+            const newText = prompt("Edit todo:", todoText.textContent);
 
-  btn1.id="Btn1";
-  btn2.id="Btn2";
-  btn3.id="Btn3";
+            if (newText) {
+                todoText.textContent = newText;
+            }
+        }
+        else if (target.classList.contains("toggle-button")) {
+            const todoRow = target.closest("tr");
+            const todoText = todoRow.querySelector("td:first-child");
 
-  li.appendChild(btn1);
-  li.appendChild(btn2);
-  li.appendChild(btn3);
-
-
-  // removes element
-  btn2.addEventListener("click", function () {
-    li.parentNode.removeChild(li);
-  });
-
-  btn1.addEventListener("click", function () {
-    li.classList.toggle("done");
-    console.log(btn1)
-    if(btn1.innerText == "Done"){
-      btn1.innerText = "Undone";
-      document.getElementById("Btn1").style.backgroundColor="green";
-      document.getElementById("Btn2").style.backgroundColor="green";
-      document.getElementById("Btn3").style.backgroundColor="green";
-
-    }
-    else //if(btn1.innerText == "Undone")
-    {
-      btn1.innerText = "Done";
-      document.getElementById("Btn1").style.backgroundColor="red";
-      document.getElementById("Btn2").style.backgroundColor="red";
-      document.getElementById("Btn3").style.backgroundColor="red";
-
-    }
-
-    
-  });
-
-  btn3.addEventListener("click", function() {
-    var listItem = this.parentNode;
-    var editInput=listItem.querySelector('input[type=text]');
-    var label = listItem.querySelector("label");
-    var containsClass = listItem.classList.contains("editMode");
-
-    if(containsClass){
-      label.innerText=editInput.value;
-    }
-    else{
-      editInput.value=label.innerText;
-    }
-    listItem.classList.toggle("editMode");
-  });
-
-  ul.appendChild(li);
-  input.value = "";
-}
+            todoRow.classList.toggle("done");
+            if (todoRow.classList.contains("done")) {
+                todoText.classList.add("done");
+                target.textContent = "Undone";
+            } else {
+                todoText.classList.remove("done");
+                target.textContent = "Done";
+            }
+        }
+    });
 
 
-function addListAfterClick() {
-  if (inputLength() > 0 && Time.value) {
-    createListElement();
-    console.log(Time.value)
-  }
-}
-
-function addListAfterKeypress(event) {
-  if (inputLength() > 0 && Time.value && eventKey === "Enter") {
-    createListElement();
-  }
-}
-
-button.addEventListener("click", addListAfterClick);
-input.addEventListener("keypress", addListAfterKeypress);
-
+});
