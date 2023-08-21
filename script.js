@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoInput = document.getElementById("todo");
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
+    const sortButton = document.getElementById("sort-button");
     const addedTodos =[];
 
     todoForm.addEventListener("submit", function(event) {
@@ -58,6 +59,20 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+
+ 
+    sortButton.addEventListener("click", function()) {
+        const rows = Array.from(todoTable.querySelectorAll("tbody tr"));
+        const doneRows = rows.filter(row => row.classList.contains("done"));
+        const undoneRows = rows.filter(row => !row.classList.contains("done"));
+
+        // Clear the table
+        todoTable.querySelector("tbody").innerHTML="";
+
+        // Append sorted rows back to the table
+        undoneRows.forEach(row => todoTable.querySelector("tbody").appendChild(row));
+        doneRows.forEach(row => todoTable.querySelector("tbody").appendChild(row));
+    };
 
 
 });
