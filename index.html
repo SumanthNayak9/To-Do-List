@@ -12,17 +12,19 @@
 
     <form id="todo-form">
         <input type="text" id="todo" placeholder="enter items" required>
+        <input type="date" id="Date" name="Date" required>
         <input type="time" id="Time" name="Time" required><br>
         <button type="submit" class="btn btn-primary">Submit</button>
-        <button id="sort-button" class="btn btn-primary">Sort</button>
 
     </form>
+    <button id="sort-button" class="btn btn-primary">Sort</button>
     
 
     <table class="table table-bordered" id="todo-table">
         <thead>
             <tr>
                 <th>Item</th>
+                <th>Date</th>
                 <th>Time</th>
                 <th>Done / Undone</th>
                 <th>Delete</th>
