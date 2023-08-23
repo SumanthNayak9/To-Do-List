@@ -1,37 +1,58 @@
-
-
 document.addEventListener("DOMContentLoaded", function() {
     const todoForm = document.getElementById("todo-form");
     const todoInput = document.getElementById("todo");
+    const todoDatein = document.getElementById("Date");
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
-    const addedTodos =[];
-    let sortAsc =true;
+    let addedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    let sortAsc = true;
 
-    todoForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const todoText = todoInput.value;
-        const todoTime = todoTimein.value;
-        // Check if the todoText is not empty and is not already in the addedTodos array
-        if (todoText && !addedTodos.includes(todoText)) {
+    function updateLocalStorage() {
+        localStorage.setItem("todos", JSON.stringify(addedTodos));
+    }
+
+    // Function to render todos
+    function renderTodos() {
+        todoTable.querySelector("tbody").innerHTML = "";
+        addedTodos.forEach(todo => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td>${todoText}</td>
-                <td>${todoTime}</td>
-                <td><button id="btn" class="toggle-button btn btn-success" >Done</button></td>
-                <td><button id="btn" class="delete-button btn btn-outline-light" ><i class="fas fa-trash delete-button"></i></button></td>
-                <td><button id="btn" class="edit-button btn btn-outline-light" ><i class="fas fa-edit edit-button"></i></button></td>
+                <td>${todo.text}</td>
+                <td>${todo.date}</td>
+                <td>${todo.time}</td>
+                <td><button class="toggle-button btn ${todo.done ? "btn-danger" : "btn-success"}">${todo.done ? "Undone" : "Done"}</button></td>
+                <td><button class="delete-button btn btn-outline-light"><i class="fas fa-trash delete-button"></i></button></td>
+                <td><button class="edit-button btn btn-outline-light"><i class="fas fa-edit edit-button"></i></button></td>
             `;
-
+            if (todo.done) {
+                newRow.classList.add("done");
+            }
             todoTable.querySelector("tbody").appendChild(newRow);
-            addedTodos.push(todoText);
-            console.log(addedTodos)
+        });
+    }
+
+    // Initial rendering
+    renderTodos();
+
+
+
+    todoForm.addEventListener("submit", function(event){
+        event.preventDefault();
+        const todoText = todoInput.value;
+        const todoDate = todoDatein.value;
+        const todoTime = todoTimein.value;
+        // Check if the todoText is not empty and is not already in the addedTodos array
+        if (todoText && !addedTodos.some(todo => todo.text === todoText)){
+            addedTodos.push({text: todoText, date: todoDate, time: todoTime, done:false});
+            updateLocalStorage();
+            renderTodos();
             todoInput.value = "";
+            todoDatein.value = "";
             todoTimein.value = "";
 
         }
-        else if (addedTodos.includes(todoText)) {
+        else if (addedTodos.some(todo => todo.text === todoText)) {
             alert("The todo item already exists in the list.");
         }
     });
@@ -47,25 +68,34 @@ document.addEventListener("DOMContentLoaded", function() {
                 addedTodos.splice(index,1);
             }
             todoRow.remove();
+            updateLocalStorage();
+            renderTodos();
 
         }
         else if (target.classList.contains("edit-button")) {
             const todoRow = target.closest("tr");
             const todoTextCell = todoRow.querySelector("td:first-child");
             const todoText = todoTextCell.textContent;
-
             const newText = prompt("Edit todo:", todoText);
 
             if (newText && newText !== todoText && !addedTodos.includes(newText)) {
                 const index = addedTodos.indexOf(todoText);
                 if (index !== -1) {
-                    addedTodos[index] = newText;
+                    const tmp = addedTodos[index];
+                    tmp.text = newText;
+                    addedTodos[index] = tmp;
+                    // addedTodos[index] = newText;
                 }
                 todoTextCell.textContent = newText;
+                updateLocalStorage();
+
             }
             else if (addedTodos.includes(newText)) {
                 alert("The edited todo item already exists in the list.");
             }
+
+            // updateLocalStorage();
+            // renderTodos();
         }
         else if (target.classList.contains("toggle-button")) {
             const todoRow = target.closest("tr");
@@ -83,6 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 target.classList.add("btn-success");
                 target.textContent = "Done";
             }
+            updateLocalStorage();
+
+            
         }
     });
 
@@ -108,8 +141,11 @@ document.addEventListener("DOMContentLoaded", function() {
             sortAsc=true;
 
         }
+        updateLocalStorage();
 
     });
+    updateLocalStorage();
+    renderTodos();
 
 
 });
