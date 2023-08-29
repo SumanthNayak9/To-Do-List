@@ -14,8 +14,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to render todos
     function renderTodos() {
+         document.getElementById("accordionFlushExample").innerHTML="";
         todoTable.querySelector("tbody").innerHTML = "";
         addedTodos.forEach(todo => {
+            renderAccordion(todo.text,todo.date,todo.time)
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td>${todo.text}</td>
@@ -30,10 +32,109 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             todoTable.querySelector("tbody").appendChild(newRow);
         });
+
+        
     }
 
     // Initial rendering
     renderTodos();
+
+    // function renderAccordion(date){
+    //     const dateTodos = addedTodos.filter(todo => todo.date === date);
+
+    //     const accordionItem = document.createElement("div");
+    //     accordionItem.classList.add("accordion-item");
+
+    //     const accordionHeader = document.createElement("h2");
+    //     accordionHeader.classList.add(accordionHeader);
+    //     accordionHeader.innerHTML = `
+    //         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${date}" aria-expanded="true" aria-controls="collapse-${date}">
+    //             ${date}
+    //         </button>
+
+    //     `;
+
+    //     const accordionCollapse = document.createElement("div");
+    //     accordionCollapse.id = `collapse-${date}`;
+    //     accordionCollapse.classList.add("accordion-collapse", "collapse");
+    //     accordionCollapse.setAttribute("aria-labelledby", `heading-${date}`);
+    //     accordionCollapse.setAttribute("data-bs-parent", "#accordion");
+
+    //     const accordionBody = document.createElement("div");
+    //     accordionBody.classList.add("accordion-body");
+
+    //     dateTodos.forEach(todo => {
+    //         const todoItem = document.createElement("div");
+    //         todoItem.classList.add("mb-2");
+    //         todoItem.innerHTML = `
+    //             <p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p>
+    //         `;
+    //        document.getElementById("accordionFlushExample").innerHTML= `<div class="accordion-item">
+    //               <h2 class="accordion-header" id="flush-headingOne">
+    //                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+    //                   Accordion Item #1
+    //                 </button>
+    //               </h2>
+    //               <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+    //                 <div class="accordion-body"><p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p><button>bahubALI</button></div>
+    //               </div>
+    //             </div>`
+    //         accordionBody.appendChild(todoItem);
+    //     };
+    //     accordionCollapse.appendChild(accordionBody);
+    //     accordionItem.appendChild(accordionHeader);
+    //     accordionItem.appendChild(accordionCollapse);
+
+    //     document.getElementById("accordion").appendChild(accordionItem);
+    // }
+    function renderAccordion(todoText,todoDate,todoTime) {
+    // const dat=eTodos  addedTodos.filter(todo => todo.date === date);
+
+    // const accordionItem = document.createElement("div");
+    // accordionItem.classList.add("accordion-item");
+
+    // const accordionHeader = document.createElement("h2");
+    // accordionHeader.classList.add("accordion-header");
+    // accordionHeader.innerHTML = `
+    //     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${date}" aria-expanded="true" aria-controls="collapse-${date}">
+    //         ${date}
+    //     </button>
+    // `;
+
+    // const accordionCollapse = document.createElement("div");
+    // accordionCollapse.id = `collapse-${date}`;
+    // accordionCollapse.classList.add("accordion-collapse", "collapse");
+    // accordionCollapse.setAttribute("aria-labelledby", `heading-${date}`);
+    // accordionCollapse.setAttribute("data-bs-parent", "#accordion");
+
+    // const accordionBody = document.createElement("div");
+    // accordionBody.classList.add("accordion-body");
+
+    // dateTodos.forEach(todo => {
+    //     const todoItem = document.createElement("div");
+    //     todoItem.classList.add("mb-2");
+    //     todoItem.innerHTML = `
+    //         <p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p>
+    //     `;
+    //     accordionBody.appendChild(todoItem);
+    // });
+
+    // accordionCollapse.appendChild(accordionBody);
+    // accordionItem.appendChild(accordionHeader);
+    // accordionItem.appendChild(accordionCollapse);
+
+    document.getElementById("accordionFlushExample").innerHTML+=(`<div class="accordion-item">
+                  <h2 class="accordion-header" id="flush-headingOne+${todoDate}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                      ${todoDate}
+                    </button>
+                  </h2>
+                  <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne+${todoDate}" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todoDate ? "Done" : "Undone"})</p></div>
+                  </div>
+                </div>`);
+
+}
 
 
 
@@ -50,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
             todoInput.value = "";
             todoDatein.value = "";
             todoTimein.value = "";
+            
 
         }
         else if (addedTodos.some(todo => todo.text === todoText)) {
@@ -115,8 +217,9 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             updateLocalStorage();
 
-            
         }
+
+
     });
 
  
@@ -146,6 +249,4 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     updateLocalStorage();
     renderTodos();
-
-
 });
