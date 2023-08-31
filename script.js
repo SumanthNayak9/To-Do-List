@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderTodos();
 
 
-    function renderAccordion(todoText,todoDate,todoTime) {
+    function renderAccordion(todoText,todoDate,todoTime,SDS) {
 
 
     document.getElementById("accordionFlushExample").innerHTML+=(`<div class="accordion-item">
@@ -54,9 +54,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     </button>
                   </h2>
                   <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne+${todoDate}" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todo.done ? "Done" : "Undone"})</p></div>
+                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${SDS ? "Done" : "Undone"})</p></div>
                   </div>
                 </div>`);
+
 
 }
 
@@ -146,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.log(document.getElementsByTagName('tr')[i].textContent);
                     console.log(addedTodos);
                     if(document.getElementsByTagName('tr')[i].textContent.includes("Undone")){
-                        addedTodos[i-1].done='Undone';
+                        addedTodos[i-1].done=true;
                     }
 
                 }
@@ -166,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.log(document.getElementsByTagName('tr')[i].textContent);
                     console.log(addedTodos);
                     if(document.getElementsByTagName('tr')[i].textContent.includes("Done")){
-                        addedTodos[i-1].done='Done';
+                        addedTodos[i-1].done=false;
                     }
 
                 }
