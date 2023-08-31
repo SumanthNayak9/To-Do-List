@@ -5,10 +5,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
-    let addedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    let addedTodos = JSON.parse(localStorage.getItem("todos")) || [];console.log(addedTodos)
     let sortAsc = true;
 
-    function updateLocalStorage() {
+    function updateLocalStorage(todos) {
+
+
+                console.warn(todos, addedTodos)
+
         localStorage.setItem("todos", JSON.stringify(addedTodos));
     }
 
@@ -17,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
          document.getElementById("accordionFlushExample").innerHTML="";
         todoTable.querySelector("tbody").innerHTML = "";
         addedTodos.forEach(todo => {
-            renderAccordion(todo.text,todo.date,todo.time)
+            renderAccordion(todo.text,todo.date,todo.time,todo.done)
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
                 <td>${todo.text}</td>
@@ -33,95 +37,15 @@ document.addEventListener("DOMContentLoaded", function() {
             todoTable.querySelector("tbody").appendChild(newRow);
         });
 
-        
+        console.log(addedTodos)
     }
 
     // Initial rendering
     renderTodos();
 
-    // function renderAccordion(date){
-    //     const dateTodos = addedTodos.filter(todo => todo.date === date);
 
-    //     const accordionItem = document.createElement("div");
-    //     accordionItem.classList.add("accordion-item");
-
-    //     const accordionHeader = document.createElement("h2");
-    //     accordionHeader.classList.add(accordionHeader);
-    //     accordionHeader.innerHTML = `
-    //         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${date}" aria-expanded="true" aria-controls="collapse-${date}">
-    //             ${date}
-    //         </button>
-
-    //     `;
-
-    //     const accordionCollapse = document.createElement("div");
-    //     accordionCollapse.id = `collapse-${date}`;
-    //     accordionCollapse.classList.add("accordion-collapse", "collapse");
-    //     accordionCollapse.setAttribute("aria-labelledby", `heading-${date}`);
-    //     accordionCollapse.setAttribute("data-bs-parent", "#accordion");
-
-    //     const accordionBody = document.createElement("div");
-    //     accordionBody.classList.add("accordion-body");
-
-    //     dateTodos.forEach(todo => {
-    //         const todoItem = document.createElement("div");
-    //         todoItem.classList.add("mb-2");
-    //         todoItem.innerHTML = `
-    //             <p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p>
-    //         `;
-    //        document.getElementById("accordionFlushExample").innerHTML= `<div class="accordion-item">
-    //               <h2 class="accordion-header" id="flush-headingOne">
-    //                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-    //                   Accordion Item #1
-    //                 </button>
-    //               </h2>
-    //               <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-    //                 <div class="accordion-body"><p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p><button>bahubALI</button></div>
-    //               </div>
-    //             </div>`
-    //         accordionBody.appendChild(todoItem);
-    //     };
-    //     accordionCollapse.appendChild(accordionBody);
-    //     accordionItem.appendChild(accordionHeader);
-    //     accordionItem.appendChild(accordionCollapse);
-
-    //     document.getElementById("accordion").appendChild(accordionItem);
-    // }
     function renderAccordion(todoText,todoDate,todoTime) {
-    // const dat=eTodos  addedTodos.filter(todo => todo.date === date);
 
-    // const accordionItem = document.createElement("div");
-    // accordionItem.classList.add("accordion-item");
-
-    // const accordionHeader = document.createElement("h2");
-    // accordionHeader.classList.add("accordion-header");
-    // accordionHeader.innerHTML = `
-    //     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${date}" aria-expanded="true" aria-controls="collapse-${date}">
-    //         ${date}
-    //     </button>
-    // `;
-
-    // const accordionCollapse = document.createElement("div");
-    // accordionCollapse.id = `collapse-${date}`;
-    // accordionCollapse.classList.add("accordion-collapse", "collapse");
-    // accordionCollapse.setAttribute("aria-labelledby", `heading-${date}`);
-    // accordionCollapse.setAttribute("data-bs-parent", "#accordion");
-
-    // const accordionBody = document.createElement("div");
-    // accordionBody.classList.add("accordion-body");
-
-    // dateTodos.forEach(todo => {
-    //     const todoItem = document.createElement("div");
-    //     todoItem.classList.add("mb-2");
-    //     todoItem.innerHTML = `
-    //         <p class="mb-0">${todo.time} - ${todo.text} (${todo.done ? "Done" : "Undone"})</p>
-    //     `;
-    //     accordionBody.appendChild(todoItem);
-    // });
-
-    // accordionCollapse.appendChild(accordionBody);
-    // accordionItem.appendChild(accordionHeader);
-    // accordionItem.appendChild(accordionCollapse);
 
     document.getElementById("accordionFlushExample").innerHTML+=(`<div class="accordion-item">
                   <h2 class="accordion-header" id="flush-headingOne+${todoDate}">
@@ -130,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </button>
                   </h2>
                   <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne+${todoDate}" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todoDate ? "Done" : "Undone"})</p></div>
+                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todo.done ? "Done" : "Undone"})</p></div>
                   </div>
                 </div>`);
 
@@ -189,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     // addedTodos[index] = newText;
                 }
                 todoTextCell.textContent = newText;
+                renderTodos();
                 updateLocalStorage();
 
             }
@@ -199,7 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
             // updateLocalStorage();
             // renderTodos();
         }
-        else if (target.classList.contains("toggle-button")) {
+
+
+    });
+
+    todoTable.addEventListener("click", function(event) {
+        const target = event.target;
+        if (target.classList.contains("toggle-button")) {
             const todoRow = target.closest("tr");
             const todoText = todoRow.querySelector("td:first-child");
 
@@ -209,18 +140,45 @@ document.addEventListener("DOMContentLoaded", function() {
                 target.classList.remove("btn-success");
                 target.classList.add("btn-danger");
                 target.textContent = "Undone";
+
+                 for(let i=1;i<document.getElementsByTagName('tr').length;i++){
+
+                    console.log(document.getElementsByTagName('tr')[i].textContent);
+                    console.log(addedTodos);
+                    if(document.getElementsByTagName('tr')[i].textContent.includes("Undone")){
+                        addedTodos[i-1].done='Undone';
+                    }
+
+                }
+                addedTodos = [...addedTodos]
+                console.log(addedTodos)
+
+                updateLocalStorage(addedTodos);
+
             } else {
-                todoText.classList.remove("done");
+                todoText.classList.add("done");
                 target.classList.remove("btn-danger");
                 target.classList.add("btn-success");
                 target.textContent = "Done";
+
+                 for(let i=1;i<document.getElementsByTagName('tr').length;i++){
+
+                    console.log(document.getElementsByTagName('tr')[i].textContent);
+                    console.log(addedTodos);
+                    if(document.getElementsByTagName('tr')[i].textContent.includes("Done")){
+                        addedTodos[i-1].done='Done';
+                    }
+
+                }
+                 console.log(addedTodos);
+                updateLocalStorage();
+
             }
-            updateLocalStorage();
-
+           
         }
-
-
+        // renderTodos();
     });
+
 
  
     sortButton.addEventListener("click", function() {
