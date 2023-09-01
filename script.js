@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const sortButton = document.getElementById("sort-button");
     let addedTodos = JSON.parse(localStorage.getItem("todos")) || [];console.log(addedTodos)
     let sortAsc = true;
+    let todoByDate = {};
 
     function updateLocalStorage(todos) {
 
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderTodos() {
          document.getElementById("accordionFlushExample").innerHTML="";
         todoTable.querySelector("tbody").innerHTML = "";
-        addedTodos.forEach(todo => {
+        Object.keys(todoByDate).forEach(todo => {
             renderAccordion(todo.text,todo.date,todo.time,todo.done)
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderTodos();
 
 
-    function renderAccordion(todoText,todoDate,todoTime,SDS) {
+    function renderAccordion(todoText,todoDate,todoTime,todoStatus) {
 
 
     document.getElementById("accordionFlushExample").innerHTML+=(`<div class="accordion-item">
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </button>
                   </h2>
                   <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne+${todoDate}" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${SDS ? "Done" : "Undone"})</p></div>
+                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todoStatus ? "Done" : "Undone"})</p></div>
                   </div>
                 </div>`);
 
@@ -68,6 +69,17 @@ document.addEventListener("DOMContentLoaded", function() {
         const todoText = todoInput.value;
         const todoDate = todoDatein.value;
         const todoTime = todoTimein.value;
+console.log(Object.keys(todoByDate),"Object",todoDate)
+        if(Object.keys(todoByDate).includes(todoDate)){
+            todoByDate[todoDate].push({"item":todoText,"time":todoTime,"status":'done'});
+        }
+        else{
+            todoByDate[todoDate]=[{"item":todo.text,"time":todo.time,"status":'done'}]
+
+        }
+
+
+
         // Check if the todoText is not empty and is not already in the addedTodos array
         if (todoText && !addedTodos.some(todo => todo.text === todoText)){
             addedTodos.push({text: todoText, date: todoDate, time: todoTime, done:false});
@@ -82,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
         else if (addedTodos.some(todo => todo.text === todoText)) {
             alert("The todo item already exists in the list.");
         }
+        console.log(todoByDate)
     });
 
     todoTable.addEventListener("click", function(event) {
