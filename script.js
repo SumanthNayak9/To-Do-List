@@ -1,3 +1,4 @@
+// let todoByDate = {};
 document.addEventListener("DOMContentLoaded", function() {
     const todoForm = document.getElementById("todo-form");
     const todoInput = document.getElementById("todo");
@@ -5,59 +6,95 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
-    let addedTodos = JSON.parse(localStorage.getItem("todos")) || [];console.log(addedTodos)
+    let todoByDate = JSON.parse(localStorage.getItem("todos")) ;
+    console.log(todoByDate)
     let sortAsc = true;
-    let todoByDate = {};
+    function vg(){
+        let temp = {}
+        for(let y=0;y<todoByDate.length;y++){
 
-    function updateLocalStorage(todos) {
 
 
-                console.warn(todos, addedTodos)
+            if(Object.keys(temp).includes(todoByDate[y].date)){
+                temp[todoByDate[y].date].push({"item":todoByDate[y].text,"time":todoByDate[y].time,"status":'done'});
+            }
+            else{
+                temp[todoByDate[y].date]=[{"item":todoByDate[y].text,"time":todoByDate[y].time,"status":'done'}];
+            }
 
-        localStorage.setItem("todos", JSON.stringify(addedTodos));
+    } 
+    console.log(temp)
+    todoByDate= temp;
     }
+
+    function updateLocalStorage() {
+
+
+                console.warn(1, todoByDate)
+
+        localStorage.setItem("todos", JSON.stringify(todoByDate));
+    }
+
+
+
+
 
     // Function to render todos
     function renderTodos() {
          document.getElementById("accordionFlushExample").innerHTML="";
         todoTable.querySelector("tbody").innerHTML = "";
+        console.warn('todoByDate', todoByDate)
         Object.keys(todoByDate).forEach(todo => {
-            renderAccordion(todo.text,todo.date,todo.time,todo.done)
+
+            renderAccordion(todoByDate[todo],todo)
+
+            for(let k=0;k<todoByDate[todo].length;k++){
+
+                        console.log(todoByDate[todo][k])
+            
             const newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td>${todo.text}</td>
-                <td>${todo.date}</td>
-                <td>${todo.time}</td>
-                <td><button class="toggle-button btn ${todo.done ? "btn-danger" : "btn-success"}">${todo.done ? "Undone" : "Done"}</button></td>
+                <td>${todoByDate[todo][k].item}</td>
+                <td>${todo}</td>
+                <td>${todoByDate[todo][k].time}</td>
+                <td><button class="toggle-button btn ${todoByDate[todo][k].status ? "btn-danger" : "btn-success"}">${todoByDate[todo][k].status ? "Undone" : "Done"}</button></td>
                 <td><button class="delete-button btn btn-outline-light"><i class="fas fa-trash delete-button"></i></button></td>
                 <td><button class="edit-button btn btn-outline-light"><i class="fas fa-edit edit-button"></i></button></td>
             `;
-            if (todo.done) {
+            if (todoByDate[todo][k].status) {
                 newRow.classList.add("done");
             }
             todoTable.querySelector("tbody").appendChild(newRow);
+            }
+    
         });
 
-        console.log(addedTodos)
+        console.log(todoByDate)
     }
 
     // Initial rendering
     renderTodos();
 
 
-    function renderAccordion(todoText,todoDate,todoTime,todoStatus) {
+    function renderAccordion(temp,todoDate) {
 
-
-    document.getElementById("accordionFlushExample").innerHTML+=(`<div class="accordion-item">
-                  <h2 class="accordion-header" id="flush-headingOne+${todoDate}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+console.log((todoDate))
+        let acc=`<div class="accordion-item">
+                  <h2 class="accordion-header" id="flush-headingOne${(todoDate)}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseO${(todoDate)}" aria-expanded="false" aria-controls="flush-collapseO${(todoDate)}">
                       ${todoDate}
                     </button>
                   </h2>
-                  <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne+${todoDate}" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body"><p class="mb-0">${todoText} - ${todoTime} (${todoStatus ? "Done" : "Undone"})</p></div>
-                  </div>
-                </div>`);
+                `
+
+        for(let k=0;k<temp.length;k++){
+
+           acc+= ` <div id="flush-collapseO${(todoDate)}" class="accordion-collapse collapse" aria-labelledby="flush-headingO${(todoDate)}${(todoDate)}" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body"><p class="mb-0">${temp[k].item} - ${temp[k].time} (${temp[k].status ? "Done" : "Undone"})</p></div>
+                  </div>`
+
+        }
+    document.getElementById("accordionFlushExample").innerHTML+=(`${acc} </div>`);
 
 
 }
@@ -66,24 +103,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
     todoForm.addEventListener("submit", function(event){
         event.preventDefault();
+
         const todoText = todoInput.value;
         const todoDate = todoDatein.value;
         const todoTime = todoTimein.value;
-console.log(Object.keys(todoByDate),"Object",todoDate)
+        console.warn(todoByDate)
+        // console.warn({text: todoText, date: todoDate, time: todoTime, done:false})
+// console.log(Object.keys(todoByDate),"Object",todoDate)
         if(Object.keys(todoByDate).includes(todoDate)){
-            todoByDate[todoDate].push({"item":todoText,"time":todoTime,"status":'done'});
+            todoByDate[todoDate].push({"item":todoText,"time":todoTime,"status":false});
         }
         else{
-            todoByDate[todoDate]=[{"item":todo.text,"time":todo.time,"status":'done'}]
-
+            todoByDate[todoDate]=[{"item":todoText,"time":todoTime,"status":false}]
         }
+        console.warn('Add todoByDate', todoByDate)
 
 
-
-        // Check if the todoText is not empty and is not already in the addedTodos array
-        if (todoText && !addedTodos.some(todo => todo.text === todoText)){
-            addedTodos.push({text: todoText, date: todoDate, time: todoTime, done:false});
-            updateLocalStorage();
+        // Check if the todoText is not empty and is not already in the todoByDate array
+        if (todoText && !Object.keys(todoByDate).includes(todo => todo.text === todoText)){
             renderTodos();
             todoInput.value = "";
             todoDatein.value = "";
@@ -91,10 +128,11 @@ console.log(Object.keys(todoByDate),"Object",todoDate)
             
 
         }
-        else if (addedTodos.some(todo => todo.text === todoText)) {
-            alert("The todo item already exists in the list.");
+        else if (todoByDate.some(todo => todo.text === todoText)) {
         }
         console.log(todoByDate)
+                    updateLocalStorage();
+
     });
 
     todoTable.addEventListener("click", function(event) {
@@ -103,14 +141,12 @@ console.log(Object.keys(todoByDate),"Object",todoDate)
         if (target.classList.contains("delete-button")) {
             const todoRow = target.closest("tr");
             const todoText = todoRow.querySelector("td:first-child").textContent;
-            const index = addedTodos.indexOf(todoText);
+            const index = todoByDate.indexOf(todoText);
             if (index!=1){
-                addedTodos.splice(index,1);
+                todoByDate.splice(index,1);
             }
             todoRow.remove();
-            updateLocalStorage();
             renderTodos();
-
         }
         else if (target.classList.contains("edit-button")) {
             const todoRow = target.closest("tr");
@@ -118,73 +154,77 @@ console.log(Object.keys(todoByDate),"Object",todoDate)
             const todoText = todoTextCell.textContent;
             const newText = prompt("Edit todo:", todoText);
 
-            if (newText && newText !== todoText && !addedTodos.includes(newText)) {
-                const index = addedTodos.indexOf(todoText);
+            if (newText && newText !== todoText && !todoByDate.includes(newText)) {
+                const index = todoByDate.indexOf(todoText);
                 if (index !== -1) {
-                    const tmp = addedTodos[index];
+                    const tmp = todoByDate[index];
                     tmp.text = newText;
-                    addedTodos[index] = tmp;
-                    // addedTodos[index] = newText;
+                    todoByDate[index] = tmp;
+                    // todoByDate[index] = newText;
                 }
                 todoTextCell.textContent = newText;
                 renderTodos();
                 updateLocalStorage();
 
             }
-            else if (addedTodos.includes(newText)) {
-                alert("The edited todo item already exists in the list.");
+            else if (todoByDate.includes(newText)) {
             }
 
             // updateLocalStorage();
             // renderTodos();
         }
+                updateLocalStorage();
+
 
 
     });
 
     todoTable.addEventListener("click", function(event) {
         const target = event.target;
+
         if (target.classList.contains("toggle-button")) {
             const todoRow = target.closest("tr");
             const todoText = todoRow.querySelector("td:first-child");
 
-            todoRow.classList.toggle("done");
-            if (todoRow.classList.contains("done")) {
-                todoText.classList.add("done");
+            todoRow.classList.toggle("status");
+            if (todoRow.classList.contains("status")) {
+                todoText.classList.add("status");
                 target.classList.remove("btn-success");
                 target.classList.add("btn-danger");
                 target.textContent = "Undone";
 
                  for(let i=1;i<document.getElementsByTagName('tr').length;i++){
 
-                    console.log(document.getElementsByTagName('tr')[i].textContent);
-                    console.log(addedTodos);
-                    if(document.getElementsByTagName('tr')[i].textContent.includes("Undone")){
-                        addedTodos[i-1].done=true;
+let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
+                    console.log(toggle[2].trim());
+                    console.log(todoByDate);
+                    for(let j=0;j<todoByDate[toggle[2].trim()].length;j++){
+                        if(document.getElementsByTagName('tr')[i].textContent.includes("Undone") && todoByDate[toggle[2].trim()][i-1].item==toggle[1].trim()){
+                            todoByDate[toggle[2].trim()][j].status=true;
+                        }
                     }
-
                 }
-                addedTodos = [...addedTodos]
-                console.log(addedTodos)
+                console.log(todoByDate)
 
-                updateLocalStorage(addedTodos);
+                updateLocalStorage(todoByDate);
 
             } else {
-                todoText.classList.add("done");
+                todoText.classList.add("status");
                 target.classList.remove("btn-danger");
                 target.classList.add("btn-success");
                 target.textContent = "Done";
 
                  for(let i=1;i<document.getElementsByTagName('tr').length;i++){
-
-                    console.log(document.getElementsByTagName('tr')[i].textContent);
-                    console.log(addedTodos);
-                    if(document.getElementsByTagName('tr')[i].textContent.includes("Done")){
-                        addedTodos[i-1].done=false;
+let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
+                    // console.log(todoByDate[toggle[2].trim()][i-1].item,toggle[1].trim());
+                    for(let j=0;j<todoByDate[toggle[2].trim()].length;j++){
+                        if(document.getElementsByTagName('tr')[i].textContent.includes("Done") && todoByDate[toggle[2].trim()][j].item==toggle[1].trim()){
+                             todoByDate[toggle[2].trim()][j].status=false;
+                        }
                     }
 
                 }
-                 console.log(addedTodos);
+                 console.log(todoByDate);
                 updateLocalStorage();
 
             }
@@ -197,8 +237,8 @@ console.log(Object.keys(todoByDate),"Object",todoDate)
  
     sortButton.addEventListener("click", function() {
         const rows = Array.from(todoTable.querySelectorAll("tbody tr"));
-        const doneRows = rows.filter(row => row.classList.contains("done"));
-        const undoneRows = rows.filter(row => !row.classList.contains("done"));
+        const doneRows = rows.filter(row => row.classList.contains("status"));
+        const undoneRows = rows.filter(row => !row.classList.contains("status"));
 
         // Clear the table
         todoTable.querySelector("tbody").innerHTML="";
