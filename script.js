@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
-    let todoByDate = JSON.parse(localStorage.getItem("todos")) ;
+    let todoByDate = JSON.parse(localStorage.getItem("todos"))||{} ;
     console.log(todoByDate)
     let sortAsc = true;
     function vg(){
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
          document.getElementById("accordionFlushExample").innerHTML="";
         todoTable.querySelector("tbody").innerHTML = "";
         console.warn('todoByDate', todoByDate)
-        Object.keys(todoByDate).forEach(todo => {
+        Object.keys(todoByDate)?.forEach(todo => {
 
             renderAccordion(todoByDate[todo],todo)
 
@@ -58,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>${todo}</td>
                 <td>${todoByDate[todo][k].time}</td>
                 <td><button class="toggle-button btn ${todoByDate[todo][k].status ? "btn-danger" : "btn-success"}">${todoByDate[todo][k].status ? "Undone" : "Done"}</button></td>
-                <td><button class="delete-button btn btn-outline-light"><i class="fas fa-trash delete-button"></i></button></td>
-                <td><button class="edit-button btn btn-outline-light"><i class="fas fa-edit edit-button"></i></button></td>
+                <td><button class="delete-button btn btn-outline-light" value='${k}${todo}'><i class="fas fa-trash delete-button"></i></button></td>
+                <td><button class="edit-button btn btn-outline-light" value='${k}${todo}'><i class="fas fa-edit edit-button"></i></button></td>
             `;
             if (todoByDate[todo][k].status) {
                 newRow.classList.add("done");
@@ -136,14 +136,15 @@ console.log((todoDate))
     });
 
     todoTable.addEventListener("click", function(event) {
-        const target = event.target;
-
+        const target= event.target;
+console.log(target.value)
         if (target.classList.contains("delete-button")) {
             const todoRow = target.closest("tr");
-            const todoText = todoRow.querySelector("td:first-child").textContent;
-            const index = todoByDate.indexOf(todoText);
-            if (index!=1){
-                todoByDate.splice(index,1);
+            let temp2 = target.value+"";
+            console.log(temp2[0],temp2.slice(1))
+            todoByDate[temp2.slice(1)].splice(Number(temp2[0]),1);
+            if(!todoByDate[temp2.slice(1)].length){
+                delete todoByDate[[temp2.slice(1)]];
             }
             todoRow.remove();
             renderTodos();
@@ -153,21 +154,34 @@ console.log((todoDate))
             const todoTextCell = todoRow.querySelector("td:first-child");
             const todoText = todoTextCell.textContent;
             const newText = prompt("Edit todo:", todoText);
+            console.log(todoRow,'todoRow')
+            console.log(todoTextCell,'todoTextCell')
+            console.log(todoText,'todoText')
+            console.log(newText)
+            
 
-            if (newText && newText !== todoText && !todoByDate.includes(newText)) {
-                const index = todoByDate.indexOf(todoText);
-                if (index !== -1) {
-                    const tmp = todoByDate[index];
-                    tmp.text = newText;
-                    todoByDate[index] = tmp;
-                    // todoByDate[index] = newText;
-                }
+            let temp3 = target.value+"";
+            console.log(temp3)
+            if (newText && newText !== todoText) {
+                todoByDate[temp3.slice(1)][Number(temp3[0])].item=newText;
                 todoTextCell.textContent = newText;
                 renderTodos();
                 updateLocalStorage();
-
+                // if (todoByDate[todoRowId]) {
+                //     todoByDate[todoRowId].item = newText;
+                //     todoTextCell.textContent = newText;
+                //     todoTextCell.textContent = newText;
+                //     renderTodos();
+                //     updateLocalStorage();
+                // }
+                // else {
+                //     todoByDate[todoRowId].item = newText;
+                //     todoTextCell.textContent = newText;
+                //     todoTextCell.textContent = newText;                }
             }
-            else if (todoByDate.includes(newText)) {
+
+            else {
+                alert("Item already exists");
             }
 
             // updateLocalStorage();
@@ -261,4 +275,5 @@ let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
     });
     updateLocalStorage();
     renderTodos();
+    console.log(todoByDate)
 });
