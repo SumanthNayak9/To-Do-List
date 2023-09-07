@@ -62,7 +62,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td><button class="edit-button btn btn-outline-light" value='${k}${todo}'><i class="fas fa-edit edit-button"></i></button></td>
             `;
             if (todoByDate[todo][k].status) {
-                newRow.classList.add("done");
+                newRow.classList.add("status");
+            }
+            else{
+                newRow.classList.remove("status");
+
             }
             todoTable.querySelector("tbody").appendChild(newRow);
             }
@@ -208,12 +212,11 @@ console.log(target.value)
                 target.textContent = "Undone";
 
                  for(let i=1;i<document.getElementsByTagName('tr').length;i++){
-
 let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
                     console.log(toggle[2].trim());
                     console.log(todoByDate);
                     for(let j=0;j<todoByDate[toggle[2].trim()].length;j++){
-                        if(document.getElementsByTagName('tr')[i].textContent.includes("Undone") && todoByDate[toggle[2].trim()][i-1].item==toggle[1].trim()){
+                        if(document.getElementsByTagName('tr')[i].textContent.includes("Undone") && todoByDate[toggle[2].trim()][i-1].item===toggle[1].trim()){
                             todoByDate[toggle[2].trim()][j].status=true;
                         }
                     }
@@ -223,7 +226,7 @@ let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
                 updateLocalStorage(todoByDate);
 
             } else {
-                todoText.classList.add("status");
+                todoText.classList.remove("status");
                 target.classList.remove("btn-danger");
                 target.classList.add("btn-success");
                 target.textContent = "Done";
@@ -246,7 +249,6 @@ let toggle=document.getElementsByTagName('tr')[i].textContent.split('\n')
         }
         // renderTodos();
     });
-
 
  
     sortButton.addEventListener("click", function() {
