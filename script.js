@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const sortButton = document.getElementById("sort-button");
     let todoByDate = JSON.parse(localStorage.getItem("todos")) || {};
     const editId = [];
-    console.log(todoByDate)
-    // console.log(editBtn)
     let sortAsc = true;
 
 
@@ -34,15 +32,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
         }
-        console.log(temp)
         todoByDate = temp;
     }
 
     function updateLocalStorage() {
-
-
-        console.warn(1, todoByDate)
-
         localStorage.setItem("todos", JSON.stringify(todoByDate));
     }
 
@@ -52,10 +45,9 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderTodos() {
         document.getElementById("accordionFlushExample").innerHTML = "";
         todoTable.querySelector("tbody").innerHTML = "";
-        console.warn('todoByDate', todoByDate)
         Object.keys(todoByDate)?.forEach(todo => {
 
-            renderAccordion(todoByDate[todo], todo)
+            renderAccordion(todoByDate)
 
             for (let k = 0; k < todoByDate[todo].length; k++) {
                 if (!todoByDate[todo][k].sec) {
@@ -63,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 }
 
-                console.log(todoByDate[todo][k])
 
                 const newRow = document.createElement("tr");
                 newRow.innerHTML = `
@@ -74,24 +65,13 @@ document.addEventListener("DOMContentLoaded", function() {
             <td><button class="delete-button btn btn-outline-light" delete-id="${todoByDate[todo][k].sec}" value='${k}${todo}'><i class="deleteId-identifier fas fa-trash delete-button"></i></button></td>
             <td ><button class="id-identifier edit-button btn btn-outline-light" id="${todoByDate[todo][k].sec}"value='${k}${todo}'><i class=" fas fa-edit edit-button"></i></button></td>
             `;
-                console.log(todoByDate[todo][k].sec)
                 if (todoByDate[todo][k].status) {
                     newRow.classList.add("status");
                 }
-                // else{
-                //     newRow.classList.remove("status");
-
-                // }
                 todoTable.querySelector("tbody").appendChild(newRow);
 
-                console.log(editId)
             }
-
-
         });
-
-        console.log(todoByDate)
-
         addClickEvents()
 
     }
@@ -99,33 +79,31 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initial rendering
     renderTodos();
 
+    function renderAccordion(todoByDate) {
+        document.getElementById("accordionFlushExample").innerHTML = '';
+        let acc ='';
+        Object.keys(todoByDate)?.forEach(todo => {
+            acc += `<div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingOne${(todo)}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseO${(todo)}" aria-expanded="false" aria-controls="flush-collapseO${(todo)}">
+        ${todo}
+        </button>
+        </h2>
+        `
 
+            for (let k = 0; k < todoByDate[todo].length; k++) {
 
+                acc += ` <div id="flush-collapseO${(todo)}" class="accordion-collapse collapse" aria-labelledby="flush-headingO${(todo)}${(todo)}" data-bs-parent="#accordionFlushExample">
 
-    function renderAccordion(temp, todoDate) {
-        // console.log((editBtn))
-        let acc = `<div class="accordion-item">
-    <h2 class="accordion-header" id="flush-headingOne${(todoDate)}">
-    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseO${(todoDate)}" aria-expanded="false" aria-controls="flush-collapseO${(todoDate)}">
-    ${todoDate}
-    </button>
-    </h2>
-    `
+         <div class="accordion-body"><p class="mb-0">${todoByDate[todo][k].item} - ${todoByDate[todo][k].time} (${todoByDate[todo][k].status ? "Complete" : "Incomplete"})</p></div>
+         </div>`
 
-        for (let k = 0; k < temp.length; k++) {
+            }
 
-            acc += ` <div id="flush-collapseO${(todoDate)}" class="accordion-collapse collapse" aria-labelledby="flush-headingO${(todoDate)}${(todoDate)}" data-bs-parent="#accordionFlushExample">
-
-     <div class="accordion-body"><p class="mb-0">${temp[k].item} - ${temp[k].time} (${temp[k].status ? "Complete" : "Incomplete"})</p></div>
-     </div>`
-
-        }
-        document.getElementById("accordionFlushExample").innerHTML += (`${acc} </div>`);
+            acc += "</div>"
+        })
+        document.getElementById("accordionFlushExample").innerHTML = acc;
     }
-
-    
-
-
 
     todoForm.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -134,8 +112,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const todoDate = todoDatein.value;
         const todoTime = todoTimein.value;
         console.warn(todoByDate)
-        // console.warn({text: todoText, date: todoDate, time: todoTime, done:false})
-        // console.log(Object.keys(todoByDate),"Object",todoDate)
         if (Object.keys(todoByDate).includes(todoDate)) {
             todoByDate[todoDate].push({
                 "item": todoText,
@@ -161,7 +137,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
         } else if (todoByDate.some(todo => todo.text === todoText)) {}
-        console.log(todoByDate)
         updateLocalStorage();
         addClickEvents();
 
@@ -169,20 +144,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function addClickEvents() {
 
         setTimeout(() => {
-            console.warn('Parent')
             const editBtn = document.querySelectorAll('.edit-button');
-                // console.log(editBtn, 120)
             for (let e = 0; e < editBtn.length; e++) {
                 editBtn[e].addEventListener("click", function(event) {
                     const target = event.target;
-
-                    console.log(event.target)
                     const editId = target.getAttribute("id");
-                    console.log(editId)
                     let arrayDate = Object.keys(todoByDate);
                     for (let i = 0; i < arrayDate.length; i++) {
                         for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
-                            console.log(todoByDate[arrayDate[i]][j].sec)
                             if (editId == todoByDate[arrayDate[i]][j].sec) {
                                 const todoText = todoByDate[arrayDate[i]][j].item;
                                 const newText = prompt("Edit todo:", todoText);
@@ -192,66 +161,29 @@ document.addEventListener("DOMContentLoaded", function() {
                             }
                         }
                     }
-
-                        // console.log(target)
-                        // const todoRow = target.parentElement.parentElement;
-                        // const todoTextCell = todoRow.children[0];
-                        // const todoText = todoTextCell.textContent;
-                        // const newText = prompt("Edit todo:", todoText);
-                        // const temp = target.value.split(''); // Split the value into [k, todoDate]
-                        // console.log(temp.slice(1).join(""))
-                        // let tem=temp[0];
-                        // if (newText && newText !== todoText) {
-                        //     todoByDate[temp.slice(1).join("")][Number(tem)].item = newText;
-                        //     todoTextCell.textContent = newText;
-                        //     const accordionItem = document.getElementById(`flush-headingOne${temp.slice(1).join("")}`);
-                        //     const accordionButton = accordionItem.querySelector("button");
-                        //     accordionButton.textContent = temp.slice(1).join("");
-                        //     const accordionBody = document.getElementById(`flush-collapseO${temp.slice(1).join("")}`);
-                        //     const accordionBodyContent = accordionBody.querySelector(".accordion-body");
-                        //     accordionBodyContent.innerHTML = `<p class="mb-0">${newText} - ${todoByDate[temp.slice(1).join("")][Number(tem)].time} (${todoByDate[temp.slice(1).join("")][Number(tem)].status ? "Complete" : "Incomplete"})</p>`;
-
-                        //     updateLocalStorage();
-                        // }
-                        // else{
-                        //     alert("The item already exists")
-                        // }
                 });
             }
 
         
 
             const deleteBtn = document.querySelectorAll('.delete-button')
-                console.log('deleteBtn', deleteBtn)
-            console.log(deleteBtn, 220)
             for (let q = 0; q < deleteBtn.length; q++) {
-                console.log('DEL', deleteBtn[q])
                 deleteBtn[q].addEventListener("click", function(event) {
                     const target = event.target;
-                    console.log('target', target)
-                    console.log('todoByDate', todoByDate)
                     const deleteId = target.getAttribute("delete-id");
-                    console.log(deleteId)
                     if (!deleteId) {
                         return
                     }
                     let arrayDate = Object.keys(todoByDate);
                     for (let i = 0; i < arrayDate.length; i++) {
                         for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
-                            console.log(todoByDate[arrayDate[i]][j].sec)
                             if (deleteId == todoByDate[arrayDate[i]][j].sec) {
-                                console.log('DEL match')
-                                delete todoByDate[arrayDate[i]].splice(j, 1);
+                                todoByDate[arrayDate[i]].splice(j, 1);
+                                if(todoByDate[arrayDate[i]].length==0){
+                                    delete todoByDate[arrayDate[i]];
+                                }
                                 renderTodos();
-
-
                                 updateLocalStorage();
-
-                                // Object.keys(todoByDate)?.forEach(todo => {
-
-                                //     renderAccordion(todoByDate[todo], todo)
-                                //                     // renderAccordion();
-                                // })
                                 break
 
                             }
@@ -262,45 +194,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             const toggleBtn = document.querySelectorAll('.toggle-button');
-                console.log('Buttons', toggleBtn)
-            console.log('ALL', todoByDate)
-
-            // for (let q = 0; q < toggleBtn.length; q++) {
-            //     console.log('DEL', toggleBtn[q])
-            //     toggleBtn[q].addEventListener("click", function(event) {
-            //         const target = event.target;
-            //         console.log('target', target)
-            //         console.log('todoByDate', todoByDate)
-            //         const deleteId = target.getAttribute("delete-id");
-            //         console.log(deleteId)
-            //         if (!deleteId) {
-            //             return
-            //         }
-            //         let arrayDate = Object.keys(todoByDate);
-            //         for (let i = 0; i < arrayDate.length; i++) {
-            //             for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
-            //                 console.log(todoByDate[arrayDate[i]][j].sec)
-            //                 if (deleteId == todoByDate[arrayDate[i]][j].sec) {
-            //                     console.log('DEL match')
-            //                     // delete todoByDate[arrayDate[i]].splice(j, 1);
-            //                     renderTodos();
-
-
-            //                     updateLocalStorage();
-
-            //                     // Object.keys(todoByDate)?.forEach(todo => {
-
-            //                     //     renderAccordion(todoByDate[todo], todo)
-            //                     //                     // renderAccordion();
-            //                     // })
-            //                     break
-
-            //                 }
-            //             }
-            //         }
-            //     });
-            // };
-            // console.log('ALL', todoByDate)
 
 
             for (let t=0;t<toggleBtn.length;t++){
@@ -311,7 +204,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             for (let t=0;t<toggleBtn.length;t++){
                 toggleBtn[t].addEventListener("click", function(event) {
-                    console.log('event', event.target)
                     const target = event.target;
                     const toggleId = target.getAttribute("toggle-id");
                     if(!toggleId){
@@ -322,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         for (let j = 0; j < todoByDate[arrayDate[i]].length; j++){
                             if (toggleId == todoByDate[arrayDate[i]][j].sec){
                                 // todoByDate.toggle("status");
-                                console.log('Match', todoByDate[arrayDate[i]][j].status)
                                 todoByDate[arrayDate[i]][j].status = !todoByDate[arrayDate[i]][j].status;
 
                                 updateLocalStorage();
@@ -337,48 +228,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }, 0)
     }
-
-
-    // todoTable.addEventListener("click", function(event) {
-    //     const target = event.target;
-
-    //     if (target.classList.contains("toggle-button")) {
-    //         const todoRow = target.closest("tr");
-    //         const todoText = todoRow.querySelector("td:first-child");
-    //         let temp4 = target.value + "";
-    //         todoRow.classList.toggle("status");
-    //         if (todoRow.classList.contains("status")) {
-    //             todoText.classList.add("status");
-    //             target.classList.remove("btn-success");
-    //             target.classList.add("btn-danger");
-    //             target.textContent = "Undone";
-
-    //             todoByDate[temp4.slice(1)][Number(temp4[0])].status = true;
-    //             console.log(todoByDate[temp4.slice(1)][Number(temp4[0])])
-
-    //             console.log(todoByDate)
-
-    //             updateLocalStorage();
-
-    //         } else {
-    //             todoText.classList.remove("status");
-    //             target.classList.remove("btn-danger");
-    //             target.classList.add("btn-success");
-    //             target.textContent = "Done";
-
-    //             todoByDate[temp4.slice(1)][Number(temp4[0])].status = false;
-
-
-    //             console.log(todoByDate);
-    //             updateLocalStorage();
-
-    //         }
-
-    //     }
-    //     // renderTodos();
-    // });
-
-
 
 
     sortButton.addEventListener("click", function() {
@@ -405,6 +254,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
     });
     updateLocalStorage();
-    // renderTodos();
-    console.log(todoByDate)
 });
