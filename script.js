@@ -172,98 +172,100 @@ document.addEventListener("DOMContentLoaded", function() {
             console.warn('Parent')
             const editBtn = document.querySelectorAll('.edit-button');
                 // console.log(editBtn, 120)
-            // for (let e = 0; e < editBtn.length; e++) {
-            //     editBtn[e].addEventListener("click", function(event) {
-            //         const target = event.target;
+            for (let e = 0; e < editBtn.length; e++) {
+                editBtn[e].addEventListener("click", function(event) {
+                    const target = event.target;
 
-            //         console.log(event.target)
-            //         const editId = target.getAttribute("id");
-            //         console.log(editId)
-            //         let arrayDate = Object.keys(todoByDate);
-            //         for (let i = 0; i < arrayDate.length; i++) {
-            //             for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
-            //                 console.log(todoByDate[arrayDate[i]][j].sec)
-            //                 if (editId == todoByDate[arrayDate[i]][j].sec) {
-            //                     const todoText = todoByDate[arrayDate[i]][j].item;
-            //                     const newText = prompt("Edit todo:", todoText);
-            //                     todoByDate[arrayDate[i]][j].text = newText;
-            //                 }
-            //             }
-            //         }
+                    console.log(event.target)
+                    const editId = target.getAttribute("id");
+                    console.log(editId)
+                    let arrayDate = Object.keys(todoByDate);
+                    for (let i = 0; i < arrayDate.length; i++) {
+                        for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
+                            console.log(todoByDate[arrayDate[i]][j].sec)
+                            if (editId == todoByDate[arrayDate[i]][j].sec) {
+                                const todoText = todoByDate[arrayDate[i]][j].item;
+                                const newText = prompt("Edit todo:", todoText);
+                                todoByDate[arrayDate[i]][j].item = newText;
+                                renderTodos();
+                                updateLocalStorage();
+                            }
+                        }
+                    }
 
-            //             // console.log(target)
-            //             // const todoRow = target.parentElement.parentElement;
-            //             // const todoTextCell = todoRow.children[0];
-            //             // const todoText = todoTextCell.textContent;
-            //             // const newText = prompt("Edit todo:", todoText);
-            //             // const temp = target.value.split(''); // Split the value into [k, todoDate]
-            //             // console.log(temp.slice(1).join(""))
-            //             // let tem=temp[0];
-            //             // if (newText && newText !== todoText) {
-            //             //     todoByDate[temp.slice(1).join("")][Number(tem)].item = newText;
-            //             //     todoTextCell.textContent = newText;
-            //             //     const accordionItem = document.getElementById(`flush-headingOne${temp.slice(1).join("")}`);
-            //             //     const accordionButton = accordionItem.querySelector("button");
-            //             //     accordionButton.textContent = temp.slice(1).join("");
-            //             //     const accordionBody = document.getElementById(`flush-collapseO${temp.slice(1).join("")}`);
-            //             //     const accordionBodyContent = accordionBody.querySelector(".accordion-body");
-            //             //     accordionBodyContent.innerHTML = `<p class="mb-0">${newText} - ${todoByDate[temp.slice(1).join("")][Number(tem)].time} (${todoByDate[temp.slice(1).join("")][Number(tem)].status ? "Complete" : "Incomplete"})</p>`;
+                        // console.log(target)
+                        // const todoRow = target.parentElement.parentElement;
+                        // const todoTextCell = todoRow.children[0];
+                        // const todoText = todoTextCell.textContent;
+                        // const newText = prompt("Edit todo:", todoText);
+                        // const temp = target.value.split(''); // Split the value into [k, todoDate]
+                        // console.log(temp.slice(1).join(""))
+                        // let tem=temp[0];
+                        // if (newText && newText !== todoText) {
+                        //     todoByDate[temp.slice(1).join("")][Number(tem)].item = newText;
+                        //     todoTextCell.textContent = newText;
+                        //     const accordionItem = document.getElementById(`flush-headingOne${temp.slice(1).join("")}`);
+                        //     const accordionButton = accordionItem.querySelector("button");
+                        //     accordionButton.textContent = temp.slice(1).join("");
+                        //     const accordionBody = document.getElementById(`flush-collapseO${temp.slice(1).join("")}`);
+                        //     const accordionBodyContent = accordionBody.querySelector(".accordion-body");
+                        //     accordionBodyContent.innerHTML = `<p class="mb-0">${newText} - ${todoByDate[temp.slice(1).join("")][Number(tem)].time} (${todoByDate[temp.slice(1).join("")][Number(tem)].status ? "Complete" : "Incomplete"})</p>`;
 
-            //             //     updateLocalStorage();
-            //             // }
-            //             // else{
-            //             //     alert("The item already exists")
-            //             // }
-            //     });
-            // }
+                        //     updateLocalStorage();
+                        // }
+                        // else{
+                        //     alert("The item already exists")
+                        // }
+                });
+            }
 
         
 
             const deleteBtn = document.querySelectorAll('.delete-button')
                 console.log('deleteBtn', deleteBtn)
             console.log(deleteBtn, 220)
-            // for (let q = 0; q < deleteBtn.length; q++) {
-            //     console.log('DEL', deleteBtn[q])
-            //     deleteBtn[q].addEventListener("click", function(event) {
-            //         const target = event.target;
-            //         console.log('target', target)
-            //         console.log('todoByDate', todoByDate)
-            //         const deleteId = target.getAttribute("delete-id");
-            //         console.log(deleteId)
-            //         if (!deleteId) {
-            //             return
-            //         }
-            //         let arrayDate = Object.keys(todoByDate);
-            //         for (let i = 0; i < arrayDate.length; i++) {
-            //             for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
-            //                 console.log(todoByDate[arrayDate[i]][j].sec)
-            //                 if (deleteId == todoByDate[arrayDate[i]][j].sec) {
-            //                     console.log('DEL match')
-            //                     delete todoByDate[arrayDate[i]].splice(j, 1);
-            //                     renderTodos();
+            for (let q = 0; q < deleteBtn.length; q++) {
+                console.log('DEL', deleteBtn[q])
+                deleteBtn[q].addEventListener("click", function(event) {
+                    const target = event.target;
+                    console.log('target', target)
+                    console.log('todoByDate', todoByDate)
+                    const deleteId = target.getAttribute("delete-id");
+                    console.log(deleteId)
+                    if (!deleteId) {
+                        return
+                    }
+                    let arrayDate = Object.keys(todoByDate);
+                    for (let i = 0; i < arrayDate.length; i++) {
+                        for (let j = 0; j < todoByDate[arrayDate[i]].length; j++) {
+                            console.log(todoByDate[arrayDate[i]][j].sec)
+                            if (deleteId == todoByDate[arrayDate[i]][j].sec) {
+                                console.log('DEL match')
+                                delete todoByDate[arrayDate[i]].splice(j, 1);
+                                renderTodos();
 
 
-            //                     updateLocalStorage();
+                                updateLocalStorage();
 
-            //                     // Object.keys(todoByDate)?.forEach(todo => {
+                                // Object.keys(todoByDate)?.forEach(todo => {
 
-            //                     //     renderAccordion(todoByDate[todo], todo)
-            //                     //                     // renderAccordion();
-            //                     // })
-            //                     break
+                                //     renderAccordion(todoByDate[todo], todo)
+                                //                     // renderAccordion();
+                                // })
+                                break
 
-            //                 }
-            //             }
-            //         }
-            //     });
-            // };
+                            }
+                        }
+                    }
+                });
+            };
 
 
             const toggleBtn = document.querySelectorAll('.toggle-button');
                 console.log('Buttons', toggleBtn)
             console.log('ALL', todoByDate)
 
-            // for (let q = 0; q < deleteBtn.length; q++) {
+            // for (let q = 0; q < toggleBtn.length; q++) {
             //     console.log('DEL', toggleBtn[q])
             //     toggleBtn[q].addEventListener("click", function(event) {
             //         const target = event.target;
@@ -301,9 +303,9 @@ document.addEventListener("DOMContentLoaded", function() {
             // console.log('ALL', todoByDate)
 
 
-            // for (let t=0;t<toggleBtn.length;t++){
-            //     toggleBtn[t].removeEventListener("click", function(event) {})
-            // }
+            for (let t=0;t<toggleBtn.length;t++){
+                toggleBtn[t].removeEventListener("click", function(event) {})
+            }
 
 
 
@@ -324,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 todoByDate[arrayDate[i]][j].status = !todoByDate[arrayDate[i]][j].status;
 
                                 updateLocalStorage();
-                                // renderTodos();
+                                renderTodos();
                                 break;
 
                             }
@@ -403,6 +405,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     });
     updateLocalStorage();
-    renderTodos();
+    // renderTodos();
     console.log(todoByDate)
 });
