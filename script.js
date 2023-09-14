@@ -62,8 +62,9 @@ document.addEventListener("DOMContentLoaded", function() {
             <td>${todo}</td>
             <td>${todoByDate[todo][k].time}</td>
             <td><button  value='${k}${todo}' id='${k}${todo}' class="toggle-button btn ${todoByDate[todo][k].status ? "btn-danger" : "btn-success"}" toggle-id="${todoByDate[todo][k].sec}">${todoByDate[todo][k].status ? "Undone" : "Done" }</button></td>
-            <td><button class="delete-button btn btn-outline-light" delete-id="${todoByDate[todo][k].sec}" value='${k}${todo}'><i class="deleteId-identifier fas fa-trash delete-button"></i></button></td>
-            <td ><button class="id-identifier edit-button btn btn-outline-light" id="${todoByDate[todo][k].sec}"value='${k}${todo}'><i class=" fas fa-edit edit-button"></i></button></td>
+            <td><i delete-id="${todoByDate[todo][k].sec}" value='${k}${todo}' class=" p-2.5 m-2 deleteId-identifier delete-button btn btn-outline-light fas fa-trash delete-button"></i></td>
+            <td ><i id="${todoByDate[todo][k].sec}" value='${k}${todo}' class=" p-2 m-2 id-identifier edit-button btn btn-outline-light fas fa-edit edit-button"></i></td>
+            <td><i modal-id="${todoByDate[todo][k].sec}" data-bs-toggle="modal" data-bs-target="#exampleModal" class=" p-2 m-2 modal-button btn btn-outline-light bi bi-info-square-fill"></i></td>
             `;
                 if (todoByDate[todo][k].status) {
                     newRow.classList.add("status");
@@ -132,8 +133,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (todoText && !Object.keys(todoByDate).includes(todo => todo.text === todoText)) {
             renderTodos();
             todoInput.value = "";
-            todoDatein.value = "";
-            todoTimein.value = "";
+            // todoDatein.value = "";
+            // todoTimein.value = "";
 
 
         } else if (todoByDate.some(todo => todo.text === todoText)) {}
@@ -166,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         
 
-            const deleteBtn = document.querySelectorAll('.delete-button')
+            const deleteBtn = document.querySelectorAll('.delete-button');
             for (let q = 0; q < deleteBtn.length; q++) {
                 deleteBtn[q].addEventListener("click", function(event) {
                     const target = event.target;
@@ -194,14 +195,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             const toggleBtn = document.querySelectorAll('.toggle-button');
-
-
-            for (let t=0;t<toggleBtn.length;t++){
-                toggleBtn[t].removeEventListener("click", function(event) {})
-            }
-
-
-
             for (let t=0;t<toggleBtn.length;t++){
                 toggleBtn[t].addEventListener("click", function(event) {
                     const target = event.target;
@@ -225,6 +218,45 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 });
             }
+
+
+            const modalBtn = document.querySelectorAll('.modal-button');
+            for(let m=0;m<modalBtn.length;m++){
+                modalBtn[m].addEventListener("click", function(event){
+                    const target=event.target;
+                    const modalId= target.getAttribute("modal-id");
+                    if(!modalId){
+                        return
+                    }
+                    let arrayDate=Object.keys(todoByDate);
+                    for(let i=0;i<arrayDate.length;i++){
+                        for(let j=0;j< todoByDate[arrayDate[i]].length;j++){
+                            if (modalId == todoByDate[arrayDate[i]][j].sec){
+                                // console.log(modalId,'modalId')
+                                // console.log(todoByDate[arrayDate[i]][j].sec, 'timestamp')
+
+                                // console.log(todoByDate[arrayDate[i]][j].item)
+                                console.log(todoByDate[arrayDate[i]])
+                                console.log(arrayDate)
+                                console.log(arrayDate[i])
+                                document.getElementById("textId").innerText = todoByDate[arrayDate[i]][j].item;
+                                document.getElementById("dateId").innerText = arrayDate[i];
+                                document.getElementById("timeId").innerText = todoByDate[arrayDate[i]][j].time;
+                                if (todoByDate[arrayDate[i]][j].status == true){
+                                    document.getElementById("statusId").innerText = "Completed";
+
+                                }
+                                else{
+                                    document.getElementById("statusId").innerText = "Incomplete";
+                                }
+                                
+                                
+                            }
+                        }
+                    }
+
+                })
+            };
 
         }, 0)
     }
