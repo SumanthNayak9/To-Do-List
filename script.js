@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             if (Object.keys(temp).includes(todoByDate[y].date)) {
-                temp[todoByDate[y].date].push({
+                temp[todoByDate[y].date].unshift({
                     "item": todoByDate[y].text,
                     "time": todoByDate[y].time,
                     "status": 'done'
@@ -112,9 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const todoText = todoInput.value;
         const todoDate = todoDatein.value;
         const todoTime = todoTimein.value;
-        console.warn(todoByDate)
         if (Object.keys(todoByDate).includes(todoDate)) {
-            todoByDate[todoDate].push({
+            todoByDate[todoDate].unshift({
                 "item": todoText,
                 "time": todoTime,
                 "status": false
@@ -142,6 +141,28 @@ document.addEventListener("DOMContentLoaded", function() {
         addClickEvents();
 
     });
+
+    // JavaScript to enable the back button when clicking "Log Out"
+        document.getElementById("logout-button").addEventListener("click", function () {
+            enableBackButton();
+        });
+
+        // Function to enable the browser's back button
+        function enableBackButton() {
+            window.history.forward(); // Forward to the current page (cancels the disableBackButton)
+        }
+
+        // Disable the back button when the user initially lands on this page
+        disableBackButton();
+        
+        // Function to disable the browser's back button
+        function disableBackButton() {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.go(1);
+            };
+        }
+
     function addClickEvents() {
 
         setTimeout(() => {
@@ -183,8 +204,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                 if(todoByDate[arrayDate[i]].length==0){
                                     delete todoByDate[arrayDate[i]];
                                 }
-                                renderTodos();
+                                
                                 updateLocalStorage();
+                                renderTodos();
                                 break
 
                             }
@@ -202,11 +224,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(!toggleId){
                         return
                     }
+
                     let arrayDate = Object.keys(todoByDate);
                     for (let i = 0; i < arrayDate.length; i++){
                         for (let j = 0; j < todoByDate[arrayDate[i]].length; j++){
                             if (toggleId == todoByDate[arrayDate[i]][j].sec){
                                 // todoByDate.toggle("status");
+
                                 todoByDate[arrayDate[i]][j].status = !todoByDate[arrayDate[i]][j].status;
 
                                 updateLocalStorage();
