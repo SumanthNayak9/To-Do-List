@@ -6,9 +6,29 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
-    let todoByDate = JSON.parse(localStorage.getItem("todos")) || {};
+    // let todoByDate = JSON.parse(localStorage.getItem("todos")) || {};
     const editId = [];
     let sortAsc = true;
+    let userId = getUserIdFromURL();
+    let userTodoLists = getUserTodoListsFromLocalStorage(userId);
+    let todoByDate = userTodoLists || {};
+
+    function getUserIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("userId");
+    }
+
+   
+    function getUserTodoListsFromLocalStorage(userId) {
+        const userTodoListsKey = `todos_${userId}`;
+        return JSON.parse(localStorage.getItem(userTodoListsKey)) || {};
+    }
+
+    
+    function updateUserTodoListsInLocalStorage(userId, todoLists) {
+        const userTodoListsKey = `todos_${userId}`;
+        localStorage.setItem(userTodoListsKey, JSON.stringify(todoLists));
+    }
 
 
     function vg() {
@@ -128,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function() {
         console.warn('Add todoByDate', todoByDate)
 
 
-        // Check if the todoText is not empty and is not already in the todoByDate array
         if (todoText && !Object.keys(todoByDate).includes(todo => todo.text === todoText)) {
             renderTodos();
             todoInput.value = "";
@@ -137,32 +156,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
         } else if (todoByDate.some(todo => todo.text === todoText)) {}
+        updateUserTodoListsInLocalStorage(userId, todoByDate);
         updateLocalStorage();
         addClickEvents();
 
     });
 
-    // JavaScript to enable the back button when clicking "Log Out"
-        document.getElementById("logout-button").addEventListener("click", function () {
-            enableBackButton();
-        });
-
-        // Function to enable the browser's back button
-        function enableBackButton() {
-            window.history.forward(); // Forward to the current page (cancels the disableBackButton)
-        }
-
-        // Disable the back button when the user initially lands on this page
-        disableBackButton();
-        
-        // Function to disable the browser's back button
-        function disableBackButton() {
-            window.history.pushState(null, "", window.location.href);
-            window.onpopstate = function () {
-                window.history.go(1);
-            };
-        }
-
+    
     function addClickEvents() {
 
         setTimeout(() => {
@@ -309,5 +309,30 @@ document.addEventListener("DOMContentLoaded", function() {
         updateLocalStorage();
 
     });
+
+     function displayUserTodoList(userId) {
+        fetch(`/your-api-endpoint/user/${userId}/todo-list`)
+            .then(response => response.json())
+            .then(data => {
+            })
+            .catch(error => console.error(error));
+     }    
+    
+
+    document.getElementById("logout-button").addEventListener("click", function () {
+        window.location.href='file:///var/www/html/sumanth/todo/index1.html';
+    });
+
+    function disableBackButton() {
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+}
+
+    disableBackButton();
+
+
+
     updateLocalStorage();
 });
