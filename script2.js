@@ -1,4 +1,47 @@
-// let todoByDate = {};
+// // let todoByDate = {};
+// document.addEventListener("DOMContentLoaded", function(){
+    
+// })
+
+function getCookie(cookieName) {
+    let cookie = {};
+    document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+    })
+    return cookie[cookieName];
+}
+
+function formSubmit(event) {
+    event.preventDefault(); // Prevent the form from submitting by default
+
+    const usernameInput = document.querySelector("input[name='username']").value.trim();
+
+    if (usernameInput !== "") {
+        let existingUsers = getCookie('users');
+
+        if (!existingUsers) {
+            existingUsers = [];
+        } else {
+            existingUsers = JSON.parse(existingUsers);
+        }
+
+        if (!existingUsers.includes(usernameInput)) {
+            existingUsers.push(usernameInput);
+
+            document.cookie = `users=${JSON.stringify(existingUsers)}; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/`;
+        }
+
+        document.cookie = `userId=${usernameInput}; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/`;
+        window.location.href = ''
+    }
+}
+
+function logOut() {
+    document.cookie = `userId=; expires=Thu, 18 Dec 1999 12:00:00 UTC; path=/`
+    window.location.href = ''
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     const todoForm = document.getElementById("todo-form");
     const todoInput = document.getElementById("todo");
@@ -6,17 +49,55 @@ document.addEventListener("DOMContentLoaded", function() {
     const todoTimein = document.getElementById("Time");
     const todoTable = document.getElementById("todo-table");
     const sortButton = document.getElementById("sort-button");
+    const existingUsers = document.getElementById("existing-user");
     // let todoByDate = JSON.parse(localStorage.getItem("todos")) || {};
     const editId = [];
     let sortAsc = true;
-    let userId = getUserIdFromURL();
+    const userId= getCookie("userId");
     let userTodoLists = getUserTodoListsFromLocalStorage(userId);
     let todoByDate = userTodoLists || {};
 
-    function getUserIdFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get("userId");
+    const modal = new bootstrap.Modal(document.getElementById("login-modal"));
+    if(!userId){
+        modal.show();
     }
+
+    function showExistingUsers() {
+        const existingUsersDiv = document.getElementById("existing-users");
+        const existingUsers = JSON.parse(getCookie('users')) || [];
+
+        let allUsers = '<ul class="list-group">';
+
+        existingUsers.forEach((user) => {
+            allUsers += `<li class="list-group-item existing-user">${user}</li>`
+        });
+        allUsers += '</ul>'
+        existingUsersDiv.innerHTML = allUsers;
+
+        // Adding click events for existing users
+
+        document.querySelectorAll(".existing-user").forEach((userItem) => {
+            userItem.addEventListener('click', function(event) {
+                const userId = event.target.innerHTML;
+                document.cookie = `userId=${userId}; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/`;
+                window.location.href = ''
+
+            })
+        })
+    }
+    showExistingUsers();
+
+
+    function showHideToggleContainer() {
+        const todoContainer = document.getElementById("todo-container");
+        const userExists = getCookie('userId');
+
+        if (!userExists) {
+            todoContainer.style.display = 'none';
+        }
+
+    }
+    showHideToggleContainer();
 
    
     function getUserTodoListsFromLocalStorage(userId) {
@@ -24,18 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
         return JSON.parse(localStorage.getItem(userTodoListsKey)) || {};
     }
 
-    
-    function updateUserTodoListsInLocalStorage(userId, todoLists) {
-        const userTodoListsKey = `todos_${userId}`;
-        localStorage.setItem(userTodoListsKey, JSON.stringify(todoLists));
-    }
-
-
     function vg() {
         let temp = {}
         for (let y = 0; y < todoByDate.length; y++) {
-
-
 
             if (Object.keys(temp).includes(todoByDate[y].date)) {
                 temp[todoByDate[y].date].unshift({
@@ -56,7 +128,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateLocalStorage() {
-        localStorage.setItem("todos", JSON.stringify(todoByDate));
+        const userId = getCookie('userId');
+        const userTodoListsKey = `todos_${userId}`;
+        localStorage.setItem(userTodoListsKey, JSON.stringify(todoByDate));
     }
 
 
@@ -156,7 +230,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
         } else if (todoByDate.some(todo => todo.text === todoText)) {}
-        updateUserTodoListsInLocalStorage(userId, todoByDate);
         updateLocalStorage();
         addClickEvents();
 
@@ -318,11 +391,6 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error(error));
      }    
     
-
-    document.getElementById("logout-button").addEventListener("click", function () {
-        window.location.href='file:///var/www/html/sumanth/todo/index1.html';
-    });
-
     function disableBackButton() {
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
